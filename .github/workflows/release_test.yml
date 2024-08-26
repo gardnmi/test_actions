@@ -11,6 +11,9 @@ on:
           - major
           - minor
           - patch
+      body:
+        description: 'An optional body for the release. Note: This input will have white space trimmed before and after it.'
+        required: false
 
 jobs:
   build:
