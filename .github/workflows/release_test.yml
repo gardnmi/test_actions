@@ -76,3 +76,6 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.new_version }}
+        prerelease: true
+        generateReleaseNotes: true
+        allowUpdates: true
