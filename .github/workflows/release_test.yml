@@ -79,6 +79,6 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ env.new_version }}
-        name: v$(( env.new_versoin }}
+        name: $v(( env.new_versoin }}
         draft: true
         allowUpdates: true
