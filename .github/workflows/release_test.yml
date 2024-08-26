@@ -1,0 +1,78 @@
+name: Releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Select the type of version bump: Major, Minor, or Patch'
+        required: true
+        type: choice
+        options:
+          - Major
+          - Minor
+          - Patch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    # Step 1: Check out the repository
+    - uses: actions/checkout@v3
+
+    # Step 2: Set up Python (you can specify the Python version if needed)
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    # Step 3: Install Hatch
+    - name: Install Hatch
+      run: pip install hatch
+
+    # Step 4: Bump the version using Hatch
+    - name: Bump version
+      run: | 
+        SEMANTIC_VERSION="${{ github.event.inputs.version }}"
+        hatch version $SEMANTIC_VERSION
+
+    # Step 6: Set up Git user configuration
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    # Step 7: Commit and push changes if any in __about__.py
+    - name: Commit and push changes in __about__.py
+      run: |
+        # Debugging: Check if __about__.py exists
+        if [ -e "src/edge_datapipe_ods2/__about__.py" ]; then
+          echo "__about__.py exists"
+        else
+          echo "__about__.py does not exist"
+          exit 1
+        fi
+
+        # Check if __about__.py has changes
+        if [ -n "$(git status --porcelain src/edge_datapipe_ods2/__about__.py)" ]; then
+          git add src/edge_datapipe_ods2/__about__.py
+          git commit -m "Bump version in __about__.py"
+          git push
+        else
+          echo "No changes to commit in __about__.py"
+          exit 0
+        fi
+
+    # Step 6: Get the new version using Hatch
+    - name: Get new version
+      id: get_version
+      run: |
+        NEW_VERSION=$(hatch version)
+        echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+
+    # Step 7: Use the new version in the release
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ env.new_version }}
