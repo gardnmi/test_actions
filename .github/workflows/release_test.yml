@@ -8,8 +8,8 @@ on:
         required: true
         type: choice
         options:
-          - major
           - minor
+          - major
           - patch
       body:
         description: 'An optional body for the release. Note: This input will have white space trimmed before and after it.'
@@ -78,7 +78,5 @@ jobs:
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ env.new_version }}
+        tag: v${{ env.new_version }}
         name: v${{ env.new_version }}
-        draft: true
-        allowUpdates: true
