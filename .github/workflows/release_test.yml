@@ -13,7 +13,7 @@ on:
           - patch
 
 jobs:
-  build:
+   bump-version:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -63,17 +63,36 @@ jobs:
           echo "No changes to commit in __about__.py"
           exit 0
         fi
+        
+   create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    # Step 1: Check out the repository
+    - uses: actions/checkout@v3
 
-    # Step 6: Get the new version using Hatch
+    # Step 2: Set up Python (you can specify the Python version if needed)
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    # Step 3: Install Hatch
+    - name: Install Hatch
+      run: pip install hatch      
+    
+    # Step 4: Get the new version using Hatch
     - name: Get new version
       id: get_version
       run: |
         NEW_VERSION=$(hatch version)
         echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
-
-    # Step 7: Use the new version in the release
+    
+    # Step 5: Use the new version in the release
     - name: Create GitHub Release
       uses: ncipollo/release-action@v1
       with:
         tag: v${{ env.new_version }}
         name: v${{ env.new_version }}
+        generateReleaseNotes: true
