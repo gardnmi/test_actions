@@ -47,7 +47,7 @@ jobs:
     - name: Commit and push changes in __about__.py
       run: |
         # Debugging: Check if __about__.py exists
-        if [ -e "src/edge_datapipe_ods2/__about__.py" ]; then
+        if [ -e "src/edge_datapip_ods2/__about__.py" ]; then
           echo "__about__.py exists"
         else
           echo "__about__.py does not exist"
@@ -55,8 +55,8 @@ jobs:
         fi
 
         # Check if __about__.py has changes
-        if [ -n "$(git status --porcelain src/edge_datapipe_ods2/__about__.py)" ]; then
-          git add src/edge_datapipe_ods2/__about__.py
+        if [ -n "$(git status --porcelain src/edge_datapip_ods2/__about__.py)" ]; then
+          git add src/edge_datapip_ods2/__about__.py
           git commit -m "Bump version in __about__.py"
           git push
         else
