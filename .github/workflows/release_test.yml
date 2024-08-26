@@ -8,9 +8,9 @@ on:
         required: true
         type: choice
         options:
-          - Major
-          - Minor
-          - Patch
+          - major
+          - minor
+          - patch
 
 jobs:
   build:
